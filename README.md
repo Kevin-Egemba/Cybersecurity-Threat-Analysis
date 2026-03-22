@@ -2,144 +2,166 @@
 
 ## Overview
 
-This project applies machine learning techniques to detect anomalous and malicious activity across multiple cybersecurity datasets.
+This project explores how machine learning models can detect anomalous and malicious behavior across different cybersecurity environments.
 
-The project is structured as a **full analytical pipeline**, beginning with data validation and progressing through unsupervised and supervised modeling approaches.
+The workflow is designed as a **full data science pipeline**, beginning with data validation and progressing through modeling and evaluation across multiple datasets.
+
+Datasets used:
+
+* **BETH** — system-level event logs (unsupervised anomaly detection)
+* **UNSW-NB15** — labeled network intrusion dataset (supervised learning)
+* **Cybersecurity Attacks dataset** — multiclass attack classification
 
 ---
 
 ## Project Workflow
 
-### 1. Data Overview & Reality Checks
+### 1. Data Overview & Validation
 
 Notebook: `01_data_overview_.ipynb`
 
-Before modeling, I validate key assumptions:
+Before building models, I perform:
 
-* Do datasets support the intended tasks?
-* Are there risks of label leakage?
-* What does "attack" look like numerically?
-* What constraints (missingness, skew, imbalance) must be addressed?
+* data quality checks
+* validation of labels and detection of leakage risks
+* distribution analysis (class imbalance, skew, outliers)
+* feature sanity checks
 
-This step ensures that all downstream modeling decisions are grounded in data reality.
+This step ensures all downstream modeling is based on reliable and interpretable data.
 
 ---
 
 ### 2. Unsupervised Anomaly Detection (BETH)
 
-Notebook: `beth_anomaly_detection_unsupervised.ipynb`
+Notebook: `02_beth_anomaly_detection.ipynb`
 
-* Focus: system-level event data
-* Models:
+Approach:
+
+* Train models on normal behavior distributions
+* Generate anomaly scores using:
 
   * KMeans (distance-based scoring)
-  * Gaussian Mixture Models (log-likelihood)
-  * Isolation Forest
-  * DBSCAN
+  * Gaussian Mixture Models (probabilistic scoring)
+  * Isolation Forest (tree-based anomaly detection)
+  * DBSCAN (density-based clustering)
 
-Evaluation uses a proxy label (`sus`) to assess anomaly ranking.
+Evaluation is performed using a proxy `sus` label to assess how well models rank suspicious events.
+
+**Key Result:**
+Isolation Forest and GMM provided the strongest separation between normal and suspicious behavior.
 
 ---
 
 ### 3. Supervised Intrusion Detection (UNSW-NB15)
 
-Notebook: `unsw_supervised_modeling.ipynb`
+Notebook: `03_unsw_supervised.ipynb`
 
-* Focus: labeled network traffic
-* Models:
+Models:
 
-  * Logistic Regression
-  * SVM
-  * Random Forest
-  * Gradient Boosting
+* Logistic Regression
+* Support Vector Machines (SVM)
+* Random Forest
+* Gradient Boosting
 
----
-
-### 4. Supervised Attack Classification (Cyber Attacks Dataset)
-
-Notebook: `cyber_attacks_supervised_modeling.ipynb`
-
-* Focus: multi-class attack classification
-* Models:
-
-  * KNN
-  * SVM
-  * Gradient Boosting
+**Key Result:**
+Tree-based models significantly outperformed linear models by capturing nonlinear attack patterns.
 
 ---
 
-### 5. Model Comparison & Results
+### 4. Attack Classification (Cyber Attacks Dataset)
+
+Notebook: `04_cyber_attacks_supervised.ipynb`
+
+Models:
+
+* K-Nearest Neighbors (KNN)
+* Support Vector Machines (SVM)
+* Gradient Boosting
+
+**Key Insight:**
+Model performance was highly sensitive to preprocessing steps such as feature scaling and class imbalance handling.
+
+---
+
+### 5. Results Comparison
 
 Notebook: `05_results_comparison.ipynb`
 
-* Cross-dataset comparison
-* Performance tradeoffs
-* Model selection insights
+This notebook consolidates:
 
----
-
-## Key Results
-
-* Isolation Forest showed strongest anomaly detection capability in unsupervised settings
-* GMM provided the clearest probabilistic separation
-* Tree-based models (Random Forest, Gradient Boosting) performed best on labeled datasets
-* Model performance is highly sensitive to feature engineering and class imbalance
+* performance across datasets
+* comparison between unsupervised and supervised approaches
+* final modeling tradeoffs and conclusions
 
 ---
 
 ## Project Structure
 
-```bash
+```bash id="3k9p0u"
 network-security-capstone/
 │
 ├── data/
-│   ├── beth/
-│   ├── unsw_nb15/
-│   └── cyber_attacks/
+│   ├── Beth DataSet/
+│   ├── Cybersecurity Attacks DataSets/
+│   └── Network Security DataSet/
 │
+├── raw/                  # raw input files (not version-controlled if large)
+├── figures/              # saved visualizations
 ├── notebooks/
 │   ├── 01_data_overview_.ipynb
-│   ├── beth_anomaly_detection_unsupervised.ipynb
-│   ├── unsw_supervised_modeling.ipynb
-│   ├── cyber_attacks_supervised_modeling.ipynb
+│   ├── 02_beth_anomaly_detection.ipynb
+│   ├── 03_unsw_supervised.ipynb
+│   ├── 04_cyber_attacks_supervised.ipynb
 │   └── 05_results_comparison.ipynb
 │
-├── figures/
 ├── results/
-├── src/
+├── src/                  # future modular code (feature engineering, models)
 ├── README.md
-└── requirements.txt
+├── requirements.txt
 ```
+
+---
+
+## Data Handling Note
+
+Raw datasets are stored separately from processed data to maintain:
+
+* reproducibility
+* clarity between raw and transformed inputs
+* flexibility for future pipeline development
+
+Large files may be excluded from version control.
 
 ---
 
 ## Technologies Used
 
-* Python (Pandas, NumPy)
+* Python (NumPy, Pandas)
 * Scikit-learn
 * Matplotlib / Seaborn
-* Jupyter
+* Jupyter Notebooks
 
 ---
 
 ## Key Takeaways
 
-* Unsupervised methods can detect suspicious behavior without labels but require careful validation
-* Tree-based models consistently outperform linear models in cybersecurity contexts
-* Data preprocessing and feature engineering are critical for reliable detection systems
+* Unsupervised models (Isolation Forest, GMM) effectively detect anomalies without labeled data.
+* Supervised models outperform in structured intrusion detection scenarios.
+* Feature preprocessing and dataset characteristics strongly impact performance.
+* Combining anomaly detection with classification provides a more robust detection strategy.
 
 ---
 
 ## Future Work
 
-* Sequence modeling (LSTM / Transformers)
-* Real-time detection pipelines
-* Feature engineering on system-level arguments
-* Hybrid models combining anomaly detection + classification
+* Sequence-based modeling (LSTM / Transformers)
+* Real-time anomaly detection pipelines
+* Feature engineering on system-level arguments (`args`)
+* Deployment using streaming frameworks (Kafka / Spark)
 
 ---
 
 ## Author
 
 Kevin Egemba
-Data Science | Cybersecurity | Analytics
+M.S. Data Science — Boston University
